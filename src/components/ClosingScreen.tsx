@@ -45,9 +45,9 @@ export const ClosingScreen: React.FC = () => {
           <h3 className="font-serif-luxury text-2xl sm:text-4xl text-[#fffaf0] font-normal">
             Happy Anniversary
           </h3>
-          <h2 className="font-script text-4xl xs:text-5xl sm:text-7xl md:text-8xl tracking-wide max-w-full px-2">
-            <span className="gold-shimmer-text font-normal">Sabnam Rai</span>
-            <span className="inline-block ml-2 sm:ml-4 text-[#ea638c] animate-pulse drop-shadow-[0_0_20px_rgba(234,99,140,0.8)]">
+          <h2 className="font-script text-4xl xs:text-5xl sm:text-7xl md:text-8xl tracking-wide max-w-full px-2 flex items-center justify-center gap-2.5 sm:gap-4 flex-nowrap">
+            <span className="gold-shimmer-text font-normal whitespace-nowrap">Sabnam Rai</span>
+            <span className="inline-block text-[#ea638c] animate-pulse drop-shadow-[0_0_20px_rgba(234,99,140,0.8)] shrink-0">
               ❤️
             </span>
           </h2>

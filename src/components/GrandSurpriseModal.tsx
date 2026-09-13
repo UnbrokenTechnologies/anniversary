@@ -125,24 +125,15 @@ export const GrandSurpriseModal: React.FC = () => {
                     {/* Bloom Aura */}
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] sm:w-[900px] h-[600px] rounded-full bg-gradient-to-tr from-[#ea638c]/40 via-[#d4af37]/35 to-transparent blur-[140px] pointer-events-none" />
 
-                    {/* Pulsing Central Heart */}
-                    <motion.div
-                      animate={{ scale: [1, 1.2, 1] }}
-                      transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
-                      className="mb-2 sm:mb-4"
-                    >
-                      <Heart className="w-12 h-12 sm:w-20 sm:h-20 text-[#ea638c] fill-[#ea638c] drop-shadow-[0_0_35px_rgba(234,99,140,0.8)]" />
-                    </motion.div>
-
                     {/* Giant Centered Name: Sabnam Rai ❤️ */}
                     <motion.h1
                       initial={{ y: 30 }}
                       animate={{ y: 0 }}
                       transition={{ delay: 0.2, duration: 1 }}
-                      className="font-script text-4xl xs:text-5xl sm:text-8xl md:text-9xl tracking-wide max-w-full px-2"
+                      className="font-script text-4xl xs:text-5xl sm:text-7xl md:text-8xl tracking-wide max-w-full px-2 flex items-center justify-center gap-3 sm:gap-4 flex-nowrap mb-2"
                     >
-                      <span className="gold-shimmer-text font-normal">Sabnam Rai</span>
-                      <span className="inline-block ml-2 sm:ml-4 text-[#ea638c] animate-pulse drop-shadow-[0_0_20px_rgba(234,99,140,0.8)]">
+                      <span className="gold-shimmer-text font-normal whitespace-nowrap">Sabnam Rai</span>
+                      <span className="inline-block text-[#ea638c] animate-pulse drop-shadow-[0_0_25px_rgba(234,99,140,0.95)] shrink-0">
                         ❤️
                       </span>
                     </motion.h1>

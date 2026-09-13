@@ -235,10 +235,10 @@ export const WishMoment3D: React.FC = () => {
                 transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] as const }}
                 className="mt-3 sm:mt-4 max-w-full"
               >
-                <h3 className="font-script text-4xl xs:text-5xl sm:text-7xl md:text-8xl tracking-wide">
+                <h3 className="font-script text-4xl xs:text-5xl sm:text-7xl md:text-8xl tracking-wide flex items-center justify-center gap-2 flex-wrap sm:flex-nowrap">
                   <span>It was you, </span>
-                  <span className="gold-shimmer-text font-normal">Sabnam</span>
-                  <span className="inline-block ml-2 text-[#ea638c] animate-pulse drop-shadow-[0_0_20px_rgba(234,99,140,0.8)]">
+                  <span className="gold-shimmer-text font-normal whitespace-nowrap">Sabnam</span>
+                  <span className="inline-block text-[#ea638c] animate-pulse drop-shadow-[0_0_20px_rgba(234,99,140,0.8)] shrink-0">
                     ❤️
                   </span>
                 </h3>

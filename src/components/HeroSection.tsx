@@ -64,9 +64,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onScrollTo }) => {
         transition={{ duration: 1.3, delay: 0.45 }}
         className="mt-1 mb-4 sm:mb-8 max-w-full px-2"
       >
-        <h2 className="font-script text-4xl xs:text-5xl sm:text-8xl md:text-9xl tracking-wide">
-          <span className="gold-shimmer-text font-normal">Sabnam Rai</span>
-          <span className="inline-block ml-2 sm:ml-4 text-[#ea638c] animate-pulse drop-shadow-[0_0_20px_rgba(234,99,140,0.8)]">
+        <h2 className="font-script text-4xl xs:text-5xl sm:text-7xl md:text-8xl tracking-wide flex items-center justify-center gap-2.5 sm:gap-4 flex-nowrap">
+          <span className="gold-shimmer-text font-normal whitespace-nowrap">Sabnam Rai</span>
+          <span className="inline-block text-[#ea638c] animate-pulse drop-shadow-[0_0_20px_rgba(234,99,140,0.8)] shrink-0">
             ❤️
           </span>
         </h2>

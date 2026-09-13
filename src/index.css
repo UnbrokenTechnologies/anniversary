@@ -1,11 +1,11 @@
-@import url('https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Allura&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
 @layer base {
   :root {
     --font-serif: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
     --font-playfair: 'Playfair Display', Georgia, serif;
-    --font-script: 'Great Vibes', 'Alex Brush', cursive;
+    --font-script: 'Allura', cursive;
     --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   }
 
@@ -19,8 +19,8 @@
 
 /* Custom Typography Helpers */
 .font-script {
-  font-family: 'Great Vibes', 'Alex Brush', 'Playfair Display', Georgia, cursive;
-  letter-spacing: 0.03em;
+  font-family: 'Allura', cursive;
+  letter-spacing: 0.02em;
 }
 
 .font-serif-luxury {
@@ -41,7 +41,7 @@
   -webkit-text-fill-color: transparent;
   animation: goldShimmer 5s linear infinite;
   display: inline-block;
-  filter: drop-shadow(0 2px 18px rgba(212, 175, 55, 0.5));
+  filter: drop-shadow(0 3px 10px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 20px rgba(212, 175, 55, 0.6));
 }
 
 .rose-shimmer-text {
@@ -53,7 +53,7 @@
   -webkit-text-fill-color: transparent;
   animation: goldShimmer 6s linear infinite;
   display: inline-block;
-  filter: drop-shadow(0 2px 18px rgba(234, 99, 140, 0.45));
+  filter: drop-shadow(0 3px 10px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 20px rgba(234, 99, 140, 0.5));
 }
 
 @keyframes goldShimmer {

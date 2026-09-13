@@ -20,6 +20,9 @@ export const OpeningScene3D: React.FC<OpeningScene3DProps> = ({ onComplete }) =>
   const boxGroupRef = useRef<THREE.Group | null>(null);
   const lightBurstRef = useRef<THREE.PointLight | null>(null);
   const burstParticlesRef = useRef<THREE.Points | null>(null);
+  const boxYOffsetRef = useRef<number>(0);
+  const boxScaleRef = useRef<number>(1);
+  const shadowMeshRef = useRef<THREE.Mesh | null>(null);
 
   useEffect(() => {
     const container = mountRef.current;
@@ -171,6 +174,7 @@ export const OpeningScene3D: React.FC<OpeningScene3DProps> = ({ onComplete }) =>
     shadowMesh.rotation.x = -Math.PI / 2;
     shadowMesh.position.y = -1.0;
     scene.add(shadowMesh);
+    shadowMeshRef.current = shadowMesh;
 
     // 5. Internal Sparkle Particles
     const particleCount = 120;
@@ -210,16 +214,20 @@ export const OpeningScene3D: React.FC<OpeningScene3DProps> = ({ onComplete }) =>
       animId = requestAnimationFrame(animate);
       const elapsedTime = (performance.now() - startTime) * 0.001;
 
-      // Floating idle motion
+      // Floating idle motion with opening offset
       if (boxGroup) {
-        boxGroup.position.y = Math.sin(elapsedTime * 1.5) * 0.12;
+        boxGroup.position.y = boxYOffsetRef.current + Math.sin(elapsedTime * 1.5) * 0.08;
         boxGroup.rotation.y = Math.sin(elapsedTime * 0.6) * 0.18 + 0.35;
         boxGroup.rotation.x = 0.15 + Math.cos(elapsedTime * 0.8) * 0.04;
+        boxGroup.scale.setScalar(boxScaleRef.current);
       }
 
-      // Shadow breathing
+      // Shadow breathing following box position
       if (shadowMesh) {
-        shadowMesh.scale.setScalar(1 - boxGroup.position.y * 0.4);
+        shadowMesh.position.y = -1.0 + boxYOffsetRef.current;
+        shadowMesh.scale.setScalar(
+          (1 - (boxGroup.position.y - boxYOffsetRef.current) * 0.4) * boxScaleRef.current
+        );
       }
 
       // Sparkle burst animation when opened
@@ -273,12 +281,19 @@ export const OpeningScene3D: React.FC<OpeningScene3DProps> = ({ onComplete }) =>
     // 1. Untie Bow & open Lid smoothly
     const startTime = performance.now();
     const duration = 2200;
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
+    const targetYDrop = isMobile ? 1.4 : 1.2;
+    const targetScale = 0.84;
 
     const animateOpen = (now: number) => {
       const elapsed = now - startTime;
       const progress = Math.min(elapsed / duration, 1);
       // Ease out cubic
       const ease = 1 - Math.pow(1 - progress, 3);
+
+      // Lower box smoothly down to bottom of viewport
+      boxYOffsetRef.current = -ease * targetYDrop;
+      boxScaleRef.current = 1 - ease * (1 - targetScale);
 
       // Untie and shrink bow
       if (ribbonBowRef.current) {
@@ -356,20 +371,21 @@ export const OpeningScene3D: React.FC<OpeningScene3DProps> = ({ onComplete }) =>
           initial={{ opacity: 0, scale: 0.9, y: 30 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.8 }}
-          className="absolute bottom-[9%] sm:bottom-[16%] z-30 flex flex-col items-center px-4 w-full max-w-xs sm:max-w-none"
+          className="absolute bottom-[9%] sm:bottom-[16%] z-30 flex flex-col items-center px-4 w-auto max-w-full"
         >
           <button
             onClick={handleOpenGift}
-            className="group relative w-full sm:w-auto px-6 py-3 sm:px-8 sm:py-3.5 rounded-full text-base sm:text-lg font-medium tracking-wider text-[#fffaf0] overflow-hidden shadow-2xl transition-all duration-500 hover:scale-105 active:scale-95 cursor-pointer"
+            className="group relative px-7 py-3 sm:px-9 sm:py-3.5 rounded-full overflow-hidden shadow-2xl transition-all duration-500 hover:scale-105 active:scale-95 cursor-pointer"
           >
             {/* Button Gradient & Glow Border */}
             <span className="absolute inset-0 bg-gradient-to-r from-[#670d22] via-[#ea638c] to-[#d4af37] opacity-90 group-hover:opacity-100 transition-opacity" />
             <span className="absolute inset-[1.5px] rounded-full bg-[#1b030b]/90 backdrop-blur-md" />
-            <span className="relative z-10 flex items-center justify-center gap-2.5 gold-shimmer-text font-serif-luxury tracking-widest text-base sm:text-lg font-semibold">
-              Open the Gift <Heart className="w-4 h-4 sm:w-5 sm:h-5 text-[#ea638c] fill-[#ea638c] animate-bounce" />
+            <span className="relative z-10 flex items-center justify-center gap-2 sm:gap-2.5 whitespace-nowrap font-serif-luxury tracking-wider text-sm xs:text-base sm:text-lg font-semibold">
+              <span className="gold-shimmer-text">Open the Gift</span>
+              <Heart className="w-4 h-4 sm:w-5 sm:h-5 text-[#ea638c] fill-[#ea638c] animate-bounce shrink-0" />
             </span>
           </button>
-          <span className="mt-2.5 text-[11px] sm:text-xs tracking-widest text-[#f6e6b4]/70 uppercase font-light">
+          <span className="mt-2.5 text-[11px] sm:text-xs tracking-widest text-[#f6e6b4]/70 uppercase font-light text-center">
             Touch to unveil your surprise
           </span>
         </motion.div>
@@ -379,23 +395,28 @@ export const OpeningScene3D: React.FC<OpeningScene3DProps> = ({ onComplete }) =>
       <AnimatePresence>
         {showNameReveal && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.6, y: 60 }}
+            initial={{ opacity: 0, scale: 0.75, y: 40 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 1.1 }}
-            transition={{ duration: 1.6, ease: [0.16, 1, 0.3, 1] as const }}
-            className="absolute z-30 flex flex-col items-center justify-center text-center px-4 pointer-events-none"
+            exit={{ opacity: 0, scale: 1.05 }}
+            transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] as const }}
+            className="absolute top-[12%] sm:top-[16%] z-30 flex flex-col items-center justify-center text-center px-4 max-w-2xl sm:max-w-4xl w-full"
           >
-            {/* Soft backdrop golden glow */}
-            <div className="absolute w-96 h-96 rounded-full bg-gradient-to-tr from-[#ea638c]/20 via-[#d4af37]/25 to-transparent blur-3xl -z-10" />
+            {/* Romantic Dark Luxury Frosted Glass Backing */}
+            <div className="absolute inset-0 -inset-x-4 sm:-inset-x-10 -inset-y-4 sm:-inset-y-8 bg-[#090104]/88 backdrop-blur-xl rounded-3xl border border-[#d4af37]/40 shadow-[0_25px_80px_rgba(0,0,0,0.95)] -z-10 pointer-events-none" />
+
+            {/* Golden & Rose Aura Glow */}
+            <div className="absolute w-72 sm:w-[500px] h-36 sm:h-52 rounded-full bg-gradient-to-tr from-[#ea638c]/25 via-[#d4af37]/30 to-transparent blur-3xl -z-10 pointer-events-none" />
 
             <motion.h1
-              initial={{ y: 20 }}
-              animate={{ y: [0, -8, 0] }}
-              transition={{ repeat: Infinity, duration: 4.5, ease: 'easeInOut' }}
-              className="font-script text-5xl xs:text-6xl sm:text-8xl md:text-9xl tracking-wide max-w-full px-2"
+              initial={{ y: 15 }}
+              animate={{ y: [0, -6, 0] }}
+              transition={{ repeat: Infinity, duration: 4, ease: 'easeInOut' }}
+              className="font-script text-4xl xs:text-5xl sm:text-7xl md:text-8xl tracking-wide max-w-full px-2 flex items-center justify-center gap-2 sm:gap-4 flex-nowrap"
             >
-              <span className="gold-shimmer-text font-normal">Sabnam Rai</span>
-              <span className="inline-block ml-2 sm:ml-4 text-[#ea638c] animate-pulse drop-shadow-[0_0_20px_rgba(234,99,140,0.8)]">
+              <span className="gold-shimmer-text font-normal whitespace-nowrap">
+                Sabnam Rai
+              </span>
+              <span className="inline-block text-[#ea638c] animate-pulse drop-shadow-[0_0_25px_rgba(234,99,140,0.95)] shrink-0">
                 ❤️
               </span>
             </motion.h1>
@@ -403,18 +424,18 @@ export const OpeningScene3D: React.FC<OpeningScene3DProps> = ({ onComplete }) =>
             {/* Animated Golden Underline Stroke */}
             <motion.div
               initial={{ width: 0 }}
-              animate={{ width: '280px' }}
-              transition={{ duration: 1.4, delay: 0.4 }}
-              className="h-[2px] bg-gradient-to-r from-transparent via-[#d4af37] to-transparent mt-2 mb-4"
+              animate={{ width: '260px' }}
+              transition={{ duration: 1.2, delay: 0.3 }}
+              className="h-[2px] bg-gradient-to-r from-transparent via-[#d4af37] to-transparent mt-2 mb-3"
             />
 
             {/* Emotional Blessing Subtitle */}
             {showSubtitle && (
               <motion.p
-                initial={{ opacity: 0, y: 15 }}
+                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1.2 }}
-                className="font-cormorant text-xl sm:text-3xl text-[#fffaf0] tracking-wider italic glow-text-rose"
+                transition={{ duration: 1 }}
+                className="font-cormorant text-base sm:text-2xl text-[#fffaf0] tracking-wider italic glow-text-rose"
               >
                 “The most beautiful blessing of my life.”
               </motion.p>
@@ -423,9 +444,9 @@ export const OpeningScene3D: React.FC<OpeningScene3DProps> = ({ onComplete }) =>
             <motion.button
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 2.2, duration: 0.8 }}
+              transition={{ delay: 1.8, duration: 0.8 }}
               onClick={onComplete}
-              className="pointer-events-auto mt-8 px-6 py-2.5 rounded-full text-sm font-medium tracking-widest text-[#f6e6b4] border border-[#d4af37]/50 bg-[#160209]/80 backdrop-blur-md hover:bg-[#d4af37] hover:text-[#160209] transition-all duration-300"
+              className="mt-6 px-6 py-2.5 rounded-full text-xs sm:text-sm font-medium tracking-widest text-[#f6e6b4] border border-[#d4af37]/50 bg-[#160209]/90 backdrop-blur-md hover:bg-[#d4af37] hover:text-[#160209] transition-all duration-300 shadow-xl cursor-pointer"
             >
               Step Into Our Love Story &rarr;
             </motion.button>
